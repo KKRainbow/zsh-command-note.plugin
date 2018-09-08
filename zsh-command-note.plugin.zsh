@@ -163,7 +163,6 @@ _s_execute() {
     typeset -A names
     typeset -A records
 
-    echo $name
     _s_read_single_record names records "$name"
 
     typeset -A dict
