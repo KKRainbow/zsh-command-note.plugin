@@ -44,8 +44,8 @@ _s_read_single_record() {
         local attr_key=$arr[1]
         local attr_val=$arr[2]
 
-        eval $ret_names"[$name]"+=\"$attr_key \"
-        eval $ret_records"[$name-$attr_key]"=\"$attr_val\"
+        eval $ret_names"[$name]"+="\"$attr_key \""
+        eval $ret_records"[$name-$attr_key]"="\"$attr_val\""
     done
 
     IFS=$O_IFS
@@ -68,7 +68,7 @@ _s_convert_record() {
     for attr in $attrs;do
         local key=$name"-"$attr
         key=${key// /}
-        eval $output_var"[$attr]="${${(P)records_var}[$key]}
+        eval $output_var"[$attr]="\"${${(P)records_var}[$key]}\"
     done
 }
 
