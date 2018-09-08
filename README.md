@@ -19,25 +19,25 @@ add `` zsh-command-note `` to ~/.zshrc plugin list.
 
 ```bash
 # list all commands
-s -list
+$ s -list
 
 # list single command
-s -list xxx
+$ s -list xxx
 
 # add a command
-s -add
+$ s -add
 
 # edit a command
-s -edit xxx
+$ s -edit xxx
 
 # remove a command
-s -remove
+$ s -remove
 
 # execute a command
-s xxx
+$ s xxx
 ```
 
 ## TODO
 
-[ ] auto compeletion
-[ ] more convient features
+- [ ] auto compeletion
+- [ ] more convient features
