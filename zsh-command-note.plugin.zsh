@@ -169,8 +169,10 @@ _s_execute() {
     typeset -A dict
     _s_convert_record names records dict "$name"
 
-    echo Executing: ${dict[name]}
-    ${dict[name]}
+    echo Executing: ${dict[comment]} ${dict[command]}
+
+    local cmd=${dict[command]}
+    eval ${cmd}
 }
 
 _s_main() {
