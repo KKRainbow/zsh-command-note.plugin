@@ -9,7 +9,7 @@ NoteBook softwares, for it's a native one.
 ## Installation
 
 ```bash
-$ git clone https://github.com/KKRainbow/zsh-command-note ~/.oh-my-zsh/custom/plugins/zsh-command-note
+$ git clone https://github.com/KKRainbow/zsh-command-note.plugin ~/.oh-my-zsh/custom/plugins/zsh-command-note
 ```
 
 add `` zsh-command-note `` to ~/.zshrc plugin list.
