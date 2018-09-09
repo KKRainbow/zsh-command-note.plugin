@@ -42,7 +42,7 @@ _s_read_single_record() {
     for line in $(cat $_s_config_dir/$name); do
         local arr=(${(s.: .)line})
         local attr_key=$arr[1]
-        local attr_val=$arr[2]
+        local attr_val=${arr[@]:1}
 
         eval $ret_names"[$name]"+="\"$attr_key \""
         eval $ret_records"[$name-$attr_key]"="\"$attr_val\""
