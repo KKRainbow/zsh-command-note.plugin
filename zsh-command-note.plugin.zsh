@@ -86,7 +86,7 @@ _s_print_item() {
     done
 }
 
-_s_list_session() {
+_s_list_commands() {
     typeset -A names
     typeset -A records
 
@@ -135,7 +135,7 @@ _s_put_record() {
 
 _s_remove_record() {
     echo -n "Removing session"
-    _s_list_session $1
+    _s_list_commands $1
     _s_check_record_exist "$1" && rm -f $_s_config_dir/$1
 }
 
@@ -175,7 +175,6 @@ _s_execute() {
 }
 
 _s_main() {
-    local _s_config_dir=~/.cache/ZshSessionManager
     local editor=vim
     if [[ -n $EDITOR ]];then
         if command -v $EDITOR; then
@@ -189,7 +188,7 @@ _s_main() {
     fi
 
     if (( $# == 0 ));then
-        _s_list_session
+        _s_list_commands
         return $?
     fi
 
@@ -200,25 +199,74 @@ _s_main() {
 
     case $cmd in
         -list)
-            _s_list_session $@
+            _s_list_commands ${(s.,.)1}
             ;;
         -edit)
-            for i in $@; do
-                _s_edit_session $@
+            for i in ${(s.,.)1}; do
+                _s_edit_session $i
             done
             ;;
         -add)
             _s_add_record
             ;;
         -remove)
-            _s_remove_record $@
+            for i in ${(s.,.)1}; do
+                _s_remove_record $i
+            done
             ;;
         *)
-            _s_execute $@
+            for i in ${(s.,.)1}; do
+                _s_execute $i
+            done
             ;;
     esac
 }
 
-compdef s_main s
+_s_completion_main() {
+    local _s_config_dir=~/.cache/ZshSessionManager
+    _arguments '-list[list commands]:List Commands:->list' \
+        '-remove[remove commands]:Remove Command:->list' \
+        '-edit[edit commands]:Remove Command:->list' \
+        '-add[add command]:Remove Command:->list'
 
-alias s="_s_main "
+    typeset -A names
+    typeset -A records
+    typeset -A dict
+
+    typeset -a list
+    _s_read_records names records
+    for name in ${(k)names};do
+        _s_convert_record names records dict $name
+
+        local comment=${dict[comment]}
+        list+="$name""[$comment]"
+    done
+    if [[ ${#list} != 0 ]];then
+        _values -s ',' "description" ${list[@]}
+    fi
+}
+
+_s() {
+    local _s_config_dir=~/.cache/ZshSessionManager
+
+    local sub=$1
+    shift
+    case $sub in
+        __s_completion)
+            _s_completion_main $@
+            ;;
+        __s_main)
+            _s_main $@
+            ;;
+    esac
+}
+
+s() {
+    _s __s_main $@
+}
+
+_s_completion_entry() {
+    _s __s_completion $@
+}
+
+compdef _s_completion_entry s

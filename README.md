@@ -39,5 +39,5 @@ $ s xxx
 
 ## TODO
 
-- [ ] auto compeletion
+- [x] auto compeletion
 - [ ] more convient features
