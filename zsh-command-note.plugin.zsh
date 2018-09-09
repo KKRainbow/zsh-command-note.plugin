@@ -165,10 +165,6 @@ _s_add_record() {
         cmd=$prev
     fi
 
-    echo "CMD: "$cmd
-    echo "CMD: "$name
-    echo "CMD: "$comment
-
     typeset -A a
     a[name]=$name
     a[comment]=$comment
