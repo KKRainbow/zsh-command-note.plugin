@@ -44,8 +44,10 @@ _s_read_single_record() {
         local attr_key=$arr[1]
         local attr_val=${arr[@]:1}
 
-        eval $ret_names"[$name]"+="\"$attr_key \""
-        eval $ret_records"[$name-$attr_key]"="\"$attr_val\""
+        local tmp=${attr_val//\\/\\\\\\\\}
+        tmp=${tmp//\'/\\\'}
+        eval $ret_names"[$name]"+="'${attr_key} '"
+        eval $ret_records"[$name-$attr_key]"="$'$tmp'"
     done
 
     IFS=$O_IFS
@@ -68,7 +70,11 @@ _s_convert_record() {
     for attr in $attrs;do
         local key=$name"-"$attr
         key=${key// /}
-        eval $output_var"[$attr]="\"${${(P)records_var}[$key]}\"
+
+        local tmp=${${(P)records_var}[$key]}
+        tmp=${tmp//\\/\\\\}
+        tmp=${tmp//\'/\\\'}
+        eval $output_var"[$attr]="$"'$tmp'"
     done
 }
 
@@ -127,6 +133,11 @@ _s_put_record() {
         echo "BUG: no prefix specified"
     fi
 
+    if [[ "$prefix" != "${prefix// /}" ]];then
+        echo "name should not contain space"
+        return -1
+    fi
+
     local config_file=$_s_config_dir/$prefix
     for k v in ${(Pkv)input_dict_var};do
         echo $k":" $v >> $config_file
@@ -143,18 +154,26 @@ _s_add_record() {
     local cmd
     local name
     local comment
-    echo -n "Enter command and press [ENTER] "
-    read cmd
-    echo -n "Enter name and press [ENTER] "
-    read name
-    echo -n "Enter comment and press [ENTER] "
-    read comment
+    
+    local prev=$(fc -ln -1)
+    echo "Previous command is: $prev"
+    vared -p "Enter command and press, use previous command if empty [ENTER] " -c cmd
+    vared -p "Enter name and press [ENTER] " -c name
+    vared -p "Enter comment and press [ENTER] " -c comment
+
+    if [[ ! -n ${cmd// /} ]]; then
+        cmd=$prev
+    fi
+
+    echo "CMD: "$cmd
+    echo "CMD: "$name
+    echo "CMD: "$comment
 
     typeset -A a
     a[name]=$name
     a[comment]=$comment
     a[command]=$cmd
-    _s_put_record a
+    _s_put_record a && _s_list_commands $name || echo "Failed to add command"
 }
 
 _s_execute() {
