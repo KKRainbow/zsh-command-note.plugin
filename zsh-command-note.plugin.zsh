@@ -163,6 +163,7 @@ _s_execute() {
     typeset -A names
     typeset -A records
 
+    _s_check_record_exist || return -1
     _s_read_single_record names records "$name"
 
     typeset -A dict
@@ -177,7 +178,7 @@ _s_execute() {
 _s_main() {
     local editor=vim
     if [[ -n $EDITOR ]];then
-        if command -v $EDITOR; then
+        if command -v $EDITOR > /dev/null; then
             editor=$EDITOR
         fi
     fi
