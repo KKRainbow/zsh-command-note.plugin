@@ -88,7 +88,9 @@ _s_print_item() {
 
     echo $name":"
     for k v in ${(kv)dict};do
-        echo "    "$k"\t\t->\t"$v
+        if [[ $k != "name" ]]; then
+            echo "    "$k"\t\t->\t"$v
+        fi
     done
 }
 
