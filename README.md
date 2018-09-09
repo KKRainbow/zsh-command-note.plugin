@@ -41,3 +41,4 @@ $ s xxx
 
 - [x] auto compeletion
 - [ ] more convient features
+- [ ] command group support
