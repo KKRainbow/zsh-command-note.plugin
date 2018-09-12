@@ -176,6 +176,7 @@ _s_add_record() {
 
 _s_execute() {
     local name=$1
+    local options=${@:2}
 
     typeset -A names
     typeset -A records
@@ -189,7 +190,13 @@ _s_execute() {
     echo Executing: ${dict[comment]} ${dict[command]}
 
     local cmd=${dict[command]}
-    eval ${cmd}
+
+    if [[ "$options" == "-nohup" ]]; then
+        eval "nohup ${cmd} > ${name}.out &"
+        tail -f ${name}.out
+    else
+        eval "${cmd}"
+    fi
 }
 
 _s_main() {
@@ -234,7 +241,7 @@ _s_main() {
             ;;
         *)
             for i in ${(s.,.)1}; do
-                _s_execute $i
+                _s_execute $i ${@:2}
             done
             ;;
     esac
